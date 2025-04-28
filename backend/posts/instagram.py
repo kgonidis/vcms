@@ -4,9 +4,12 @@ from instagrapi import Client
 from dataclasses import dataclass
 from os import environ
 from tempfile import NamedTemporaryFile
+from logging import getLogger
 
 from .post import MediaPost, MediaObject
 from .models import IntegrationSecrets
+
+logger = getLogger(__name__)
 
 @dataclass
 class InstagramCredentials:
@@ -22,7 +25,7 @@ class Instagram(MediaPost):
             try:
                 self.client.login(username=credentials.username, password=credentials.password)
             except Exception as e:
-                print(f"Error logging in to Instagram: {e}")
+                logger.error(f"Failed to login to Instagram: {e}")
                 self.client = None
         else:
             self.client = None

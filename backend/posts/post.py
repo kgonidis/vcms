@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from io import IOBase
+from logging import getLogger
 
+logger = getLogger(__name__)
 
 @dataclass
 class MediaObject:
@@ -19,8 +21,9 @@ class MediaPost:
         return cls()
 
     def post(self, text: str, media: MediaObject = None):
-        print(f"Posting {text} to {self.__class__.__name__}")
-        
+        if media:
+            media_str = f" with media {media.name} ({media.mime_type})"
+        logger.debug(f"Posting {text} to {self.__class__.__name__}{media_str}")
 
     @classmethod
     def reset(cls):

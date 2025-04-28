@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import os, io, threading
 from typing import IO, Optional
+import logging
 
 from minio import Minio
 from minio.error import S3Error
 
+logger = logging.getLogger(__name__)
 
 class MinioClient:
     """
@@ -102,7 +104,7 @@ class MinioClient:
         try:
             self._client.remove_object(bucket, key)
         except S3Error as exc:
-            print(f"Error deleting object {key} from bucket {bucket}: {exc}")
+            logger.error(f"Error deleting object {key} from bucket {bucket}: {exc}")
 
 
 # ───────────────── helpers ───────────────── #

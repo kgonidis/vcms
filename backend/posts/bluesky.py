@@ -8,13 +8,10 @@
 #
 # If you prefer, pass credentials explicitly via BlueskyCredentials.
 
-import datetime
-import io
 from dataclasses import dataclass
-from os import environ
-from typing import IO, Optional
+from typing import Optional
 
-from atproto import Client, models
+from atproto import Client
 
 from .models import IntegrationSecrets
 

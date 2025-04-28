@@ -4,6 +4,7 @@ from rest_framework.request import Request
 from rest_framework import status
 from uuid import uuid4
 from typing import Dict
+from logging import getLogger
 
 from .models import Post, IntegrationSecrets
 from .serializers import PostSerializer, IntegrationSecretsSerializer
@@ -12,6 +13,8 @@ from .twitter import Twitter
 from .instagram import Instagram
 from .bluesky import Bluesky
 from .helpers import schedule_post, delete_post_artifacts, reset_posters
+
+logger = getLogger(__name__)
 
 MEDIA_POSTERS: Dict[str, MediaPost] = {
     "x": Twitter,
@@ -59,7 +62,7 @@ class PostView(APIView):
         serial = PostSerializer(data=req_dict)
         post = None
         if not serial.is_valid():
-            print(serial.errors)
+            logger.error(f"Post serializer error: {serial.errors}")
             return Response(serial.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             post = serial.save()
@@ -67,13 +70,13 @@ class PostView(APIView):
         try:
             schedule_post(post, media_obj=media_obj)
         except Exception as e:
-            print(e)
+            logger.error(f"Error scheduling post: {e}")
             return Response(
                 {"error": "Error scheduling post."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
         return Response(
-            {"message": "Post created successfully!"}, status=status.HTTP_200_OK
+            {"message": f"Post {post.id} created successfully!"}, status=status.HTTP_200_OK
         )
 
     def delete(self, request: Request, id: int) -> Response:
@@ -82,14 +85,14 @@ class PostView(APIView):
             delete_post_artifacts(post)
             post.delete()
             return Response(
-                {"message": "Post deleted successfully!"}, status=status.HTTP_200_OK
+                {"message": f"Post {id} deleted successfully!"}, status=status.HTTP_200_OK
             )
         except Post.DoesNotExist:
             return Response(
                 {"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
-            print(e)
+            logger.error(f"Error deleting post: {e}")
             return Response(
                 {"error": f"Error deleting post. {e}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
@@ -119,5 +122,12 @@ class IntegrationSecretsView(APIView):
                 return Response({"message": f"Secrets {secrets_id} deleted."}, status=status.HTTP_200_OK)
             except IntegrationSecrets.DoesNotExist:
                 return Response({"error": "Record not found."}, status=status.HTTP_404_NOT_FOUND)
-        IntegrationSecrets.objects.all().delete()
+            except Exception as e:
+                logger.error(f"Error deleting secrets: {e}")
+                return Response({"error": "Error deleting secrets."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try: 
+            IntegrationSecrets.objects.all().delete()
+        except Exception as e:
+            logger.error(f"Error deleting all secrets: {e}")
+            return Response({"error": "Error deleting all secrets."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({"message": "All secrets deleted."}, status=status.HTTP_200_OK)

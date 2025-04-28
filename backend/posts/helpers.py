@@ -1,4 +1,5 @@
 from typing import Dict
+from datetime import datetime
 from .models import Post, Asset, Social
 from .post import MediaObject, MediaPost
 from .blob import MinioClient
@@ -91,6 +92,7 @@ def schedule_post(post: Post, media_obj: MediaObject = None) -> None:
         ),
     )
 
+
 def delete_post_artifacts(post: Post) -> None:
     # Delete the post from the task queue or cron job
     TaskScheduler.instance().cancel(job_id=post.id)
@@ -102,6 +104,28 @@ def delete_post_artifacts(post: Post) -> None:
             MinioClient.instance().delete_object(media.bucket, media.key)
         except Exception as e:
             print(f"Error deleting media {media.key} from MinioClient: {e}")
+
+
+def reschedule_post(post: Post) -> None:
+    if post.schedule is None:
+        return
+
+    # if now is smaller than the schedule, reschedule the post
+    if post.schedule > datetime.now():
+        TaskScheduler.instance().schedule(
+            post.id,
+            post.schedule,
+            post_safe,
+            post,
+            repeat=(
+                post.repeat
+                if post.repeat and post.repeat != "" and post.repeat != "none"
+                else None
+            ),
+        )
+    elif post.repeat and post.repeat != "" and post.repeat != "none":
+        TaskScheduler.instance().schedule_after(post.id, post.repeat, post_safe, post)
+
 
 def reset_posters() -> None:
     # Reset the instances of all media posters
