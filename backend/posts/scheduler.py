@@ -33,6 +33,13 @@ class TaskScheduler:
 
     # ------------ internal helpers ------------ #
     def _make_trigger(self, first: datetime, repeat: Repeat | timedelta):
+        """Create a trigger for the first run and repeat interval.
+        Args:
+            first (datetime): The first run time.
+            repeat (Repeat | timedelta): The repeat interval.
+        Returns:
+            Trigger: The trigger for the job.
+        """
         if repeat is None:
             return DateTrigger(run_date=first)
 
@@ -123,8 +130,8 @@ class TaskScheduler:
         job = self._sched.add_job(func, trig, args=args, kwargs=kwargs)
         self._jobs[job_id] = job
 
-    # management -----------------------------------------------------------
     def cancel(self, job_id: int) -> bool:
+        """Cancel a job by id.  Returns True if job was found and removed."""
         job = self._jobs.pop(job_id, None)
         if job:
             try:
@@ -135,6 +142,7 @@ class TaskScheduler:
         return False
 
     def shutdown(self, wait: bool = False):
+        """Shutdown the scheduler and cancel all jobs."""
         if self._sched.running:
             self._sched.shutdown(wait=wait)
 

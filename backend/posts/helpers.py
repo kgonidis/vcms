@@ -17,6 +17,16 @@ MEDIA_POSTERS: Dict[str, MediaPost] = {
 
 
 def upload_media(media_obj: MediaObject, asset: Asset) -> None:
+    """
+    Uploads a media object to MinioClient.
+
+    Args:
+        media_obj (MediaObject): The media object to upload.
+        asset (Asset): The asset containing bucket and key information.
+
+    Raises:
+        Exception: If an error occurs during the upload process.
+    """
     # Upload the media to MinioClient
     media_obj.media.seek(0)  # Reset the file pointer to the beginning
     try:
@@ -31,6 +41,17 @@ def upload_media(media_obj: MediaObject, asset: Asset) -> None:
 
 
 def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
+    """
+    Posts content immediately to the specified social media platforms.
+
+    Args:
+        post (Post): The post object containing text and associated assets.
+        media_obj (MediaObject, optional): The media object to post. Defaults to None.
+
+    Raises:
+        RuntimeError: If an error occurs while retrieving media from MinioClient.
+        ValueError: If the social media platform is unsupported.
+    """
     # get media from MinioClient if it exists
 
     if media_obj is None:
@@ -74,6 +95,13 @@ def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
 
 
 def post_safe(post: Post, media_obj: MediaObject = None) -> None:
+    """
+    Safely posts content to social media platforms, handling exceptions.
+
+    Args:
+        post (Post): The post object containing text and associated assets.
+        media_obj (MediaObject, optional): The media object to post. Defaults to None.
+    """
     print(f"Posting {post.text} to {post.socials.all()}")
     try:
         post_immediate(post, media_obj)
@@ -82,6 +110,13 @@ def post_safe(post: Post, media_obj: MediaObject = None) -> None:
 
 
 def schedule_post(post: Post, media_obj: MediaObject = None) -> None:
+    """
+    Schedules a post for future publication or posts it immediately if required.
+
+    Args:
+        post (Post): The post object containing text, schedule, and repeat information.
+        media_obj (MediaObject, optional): The media object to post. Defaults to None.
+    """
     if media_obj is not None:
         # Upload the media to MinioClient
         for _media in post.assets.all():
@@ -108,6 +143,12 @@ def schedule_post(post: Post, media_obj: MediaObject = None) -> None:
 
 
 def delete_post_artifacts(post: Post) -> None:
+    """
+    Deletes all artifacts related to a post, including scheduled tasks and media.
+
+    Args:
+        post (Post): The post object whose artifacts need to be deleted.
+    """
     # Delete the post from the task queue or cron job
     TaskScheduler.instance().cancel(job_id=post.id)
 
@@ -121,6 +162,12 @@ def delete_post_artifacts(post: Post) -> None:
 
 
 def reschedule_post(post: Post) -> None:
+    """
+    Reschedules a post based on its schedule and repeat settings.
+
+    Args:
+        post (Post): The post object containing schedule and repeat information.
+    """
     if post.schedule is None:
         return
 
@@ -142,6 +189,8 @@ def reschedule_post(post: Post) -> None:
 
 
 def reset_posters() -> None:
-    # Reset the instances of all media posters
+    """
+    Resets the instances of all media posters.
+    """
     for media_poster in MEDIA_POSTERS.values():
         media_poster.reset()
