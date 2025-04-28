@@ -67,7 +67,7 @@ class TaskScheduler:
     ):
         """Run at `when` (first execution) and optionally keep repeating."""
         if job_id in self._jobs:
-            raise ValueError(f"Job id {job_id} already exists")
+            self.cancel(job_id)
 
         trig = self._make_trigger(when, repeat)
         job = self._sched.add_job(func, trig, args=args, kwargs=kwargs)
@@ -93,7 +93,7 @@ class TaskScheduler:
             ts.schedule_after(42, "weekly", job, at_time=time(9,0))
         """
         if job_id in self._jobs:
-            raise ValueError(f"Job id {job_id} already exists")
+            self.cancel(job_id)
 
         now = start_from or datetime.now(self._sched.timezone)
 

@@ -1,5 +1,5 @@
 from typing import Dict
-from datetime import datetime
+from datetime import datetime, timezone
 from .models import Post, Asset, Social
 from .post import MediaObject, MediaPost
 from .blob import MinioClient
@@ -111,7 +111,7 @@ def reschedule_post(post: Post) -> None:
         return
 
     # if now is smaller than the schedule, reschedule the post
-    if post.schedule > datetime.now():
+    if post.schedule > datetime.now(timezone.utc):
         TaskScheduler.instance().schedule(
             post.id,
             post.schedule,
