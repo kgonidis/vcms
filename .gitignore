@@ -48,3 +48,6 @@ backend/posts/migrations/*
 
 # vscode
 .vscode/
+
+# scripts
+upload-secrets.sh
