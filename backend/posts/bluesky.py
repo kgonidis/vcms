@@ -97,6 +97,7 @@ class Bluesky:
         """
 
         if media is not None:
+            media.media.seek(0)  # Reset the file pointer to the beginning
             b = media.media.read()
             if "image/" in media.mime_type:
                 self.client.send_image(text, b, image_alt=alt)

@@ -47,8 +47,17 @@ def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
                 )
             break
 
-    pos = media_obj.media.tell()
-    data = media_obj.media.read()
+    def get_media_copy():
+        if media_obj is None:
+            return None
+        media_obj.media.seek(0)  # Reset the file pointer to the beginning
+        b = media_obj.media.read()
+        return MediaObject(
+            name=media_obj.name,
+            mime_type=media_obj.mime_type,
+            media=io.BytesIO(b),
+        )
+
     for _s in post.socials.all():
         s: Social = _s
         if s.social not in MEDIA_POSTERS:
@@ -56,15 +65,9 @@ def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
         media_poster = MEDIA_POSTERS[s.social].instance()
         # deep copy the media object
         try:
-            m = io.BytesIO(data)
-            m.seek(pos)
             media_poster.post(
                 post.text,
-                media=MediaObject(
-                    media_obj.name,
-                    media_obj.mime_type,
-                    m,
-                ),
+                media=get_media_copy(),
             )
         except Exception as e:
             print(f"Error posting to {s.social}: {e}")

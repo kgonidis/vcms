@@ -81,6 +81,7 @@ class Twitter(MediaPost):
         category = category or (
             "tweet_image" if mime_type.startswith("image/") else "tweet_video"
         )
+        media.seek(0)  # Reset the file pointer to the beginning
         resp = self.api.media_upload(filename, file=media, media_category=category)
         return resp.media_id_string
 
