@@ -31,7 +31,7 @@ services:
             - minio_data:/data
     
     backend:
-        image: vcms-backend:latest
+        image: kgonidis/vcms-backend:latest
         container_name: vcms-backend
         networks:
             - vcms
@@ -55,7 +55,7 @@ services:
             - POSTGRES_PORT=5432
     
     frontend:
-        image: vcms-frontend:latest
+        image: kgonidis/vcms-frontend:latest
         container_name: vcms-frontend
         networks:
             - vcms

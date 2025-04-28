@@ -1,0 +1,102 @@
+name: CI-CD
+
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_BACKEND: ${{ env.REGISTRY }}/${{ github.repository_owner }}/vcms-backend
+  IMAGE_FRONTEND: ${{ env.REGISTRY }}/${{ github.repository_owner }}/vcms-frontend
+  TAG: ${{ github.sha }}
+
+jobs:
+# ───────────────────────────── tests ───────────────────────────────
+  test-backend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: backend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: frontend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+# ───────────────────────── build & push images ─────────────────────
+  build:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT }}
+
+      - name: Build & push backend
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/Dockerfile
+          tags: |
+            ${{ env.IMAGE_BACKEND }}:${{ env.TAG }}
+            ${{ env.IMAGE_BACKEND }}:latest
+          push: true
+
+      - name: Build & push frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          build-args: NEXT_PUBLIC_API_URL=https://api.kirongonidis.com
+          tags: |
+            ${{ env.IMAGE_FRONTEND }}:${{ env.TAG }}
+            ${{ env.IMAGE_FRONTEND }}:latest
+          push: true
+
+# ───────────────────────── deployment ──────────────────────────────
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production          # “prod” environment in GitHub UI
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.PROD_SSH_KEY }}
+
+      - name: Copy compose file (optional)
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          source: "docker-compose.yaml"
+          target: "/opt/vcms/"
+
+      - name: Pull new images & restart
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          script: |
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GHCR_PAT }}
+            cd /opt/vcms
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
