@@ -44,3 +44,6 @@ next-env.d.ts
 **/__pycache__/
 backend/config/log
 backend/posts/migrations/*
+
+# vscode
+.vscode/
