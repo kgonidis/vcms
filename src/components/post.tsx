@@ -6,8 +6,7 @@ import Select from "react-select";
 import { useDropzone } from "react-dropzone";
 import "react-datepicker/dist/react-datepicker.css";
 
-// Modal.setAppElement('#root'); // Call once in your app entry
-
+// Options for repeat intervals
 const repeatOptions = [
   { value: "none", label: "None" },
   { value: "daily", label: "Daily" },
@@ -15,43 +14,49 @@ const repeatOptions = [
   { value: "monthly", label: "Monthly" },
 ];
 
+// Options for social platforms
 const socialOptions = [
   { value: "instagram", label: "Instagram" },
   { value: "x", label: "X (Twitter)" },
   { value: "bluesky", label: "Bluesky" },
 ];
 
+// Interface for scheduling parameters
 export interface ScheduleParameters {
-  text: string;
-  dateTime?: Date;       // undefined ⇒ post immediately
-  repeat: string;        // "none" when immediate or non‑recurring
-  social: string[];      // multiple platforms
-  assets: File[];
-  immediate: boolean;
+  text: string; // Post text
+  dateTime?: Date; // Date and time for scheduled posts
+  repeat: string; // Repeat interval (e.g., "none", "daily")
+  social: string[]; // Selected social platforms
+  assets: File[]; // Uploaded media files
+  immediate: boolean; // Whether the post is immediate or scheduled
 }
 
+// Props for the ScheduledPostModal component
 interface ScheduledPostModalProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  onSchedule: (data: ScheduleParameters) => void;
+  isOpen: boolean; // Whether the modal is open
+  onRequestClose: () => void; // Function to close the modal
+  onSchedule: (data: ScheduleParameters) => void; // Function to handle scheduling
 }
 
+// ScheduledPostModal component for creating or scheduling posts
 export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule }: ScheduledPostModalProps) {
-  const [text, setText] = useState("");
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [repeat, setRepeat] = useState(repeatOptions[0]);
-  const [social, setSocial] = useState<typeof socialOptions>([]);
-  const [files, setFiles] = useState<File[]>([]);
-  const [immediate, setImmediate] = useState(false);
+  const [text, setText] = useState(""); // Post text
+  const [date, setDate] = useState<Date | undefined>(new Date()); // Selected date
+  const [repeat, setRepeat] = useState(repeatOptions[0]); // Selected repeat option
+  const [social, setSocial] = useState<typeof socialOptions>([]); // Selected social platforms
+  const [files, setFiles] = useState<File[]>([]); // Uploaded files
+  const [immediate, setImmediate] = useState(false); // Whether the post is immediate
 
+  // Dropzone configuration for file uploads
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [],
       "video/*": [],
     },
-    onDrop: (accepted) => setFiles(accepted),
+    onDrop: (accepted) => setFiles(accepted), // Handle dropped files
   });
 
+  // Reset the form state
   const resetState = () => {
     setText("");
     setDate(new Date());
@@ -61,6 +66,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
     setImmediate(false);
   };
 
+  // Handle form submission
   const handleSubmit = () => {
     if (!text.trim()) {
       alert("Post text is required.");
@@ -77,6 +83,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
       return;
     }
 
+    // Call the onSchedule function with the collected data
     onSchedule({
       text,
       dateTime: immediate ? undefined : date!,
@@ -86,8 +93,8 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
       immediate,
     });
 
-    resetState();
-    onRequestClose();
+    resetState(); // Reset the form state
+    onRequestClose(); // Close the modal
   };
 
   return (
@@ -123,6 +130,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
         </label>
       </div>
 
+      {/* Post text input */}
       <label className="block mb-1 font-medium text-sm">Post Text</label>
       <textarea
         value={text}
@@ -134,6 +142,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
 
       {!immediate && (
         <>
+          {/* Date and time picker */}
           <label className="block mb-1 font-medium text-sm">Date & Time</label>
           <DatePicker
             selected={date}
@@ -146,6 +155,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
             minDate={new Date()}
           />
 
+          {/* Repeat interval selector */}
           <label className="block mb-1 font-medium text-sm">Repeat</label>
           <Select
             options={repeatOptions}
@@ -157,6 +167,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
         </>
       )}
 
+      {/* Social platform selector */}
       <label className="block mb-1 font-medium text-sm">Social Platforms</label>
       <Select
         options={socialOptions}
@@ -168,6 +179,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
         closeMenuOnSelect={false}
       />
 
+      {/* File upload section */}
       <label className="block mb-1 font-medium text-sm">Media (Images / Videos)</label>
       <div
         {...getRootProps()}
@@ -177,6 +189,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
         <p>Drag & drop files here, or click to select</p>
       </div>
 
+      {/* Display uploaded files */}
       {files.length > 0 && (
         <ul className="mb-4 list-disc list-inside text-sm">
           {files.map((f) => (
@@ -185,6 +198,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
         </ul>
       )}
 
+      {/* Action buttons */}
       <div className="flex justify-end space-x-2">
         <button
           onClick={onRequestClose}
@@ -202,5 +216,3 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
     </Modal>
   );
 }
-
-// Utility: File → Uint8Array

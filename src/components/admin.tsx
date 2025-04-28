@@ -1,19 +1,21 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
+// Interface for integration secrets
 export interface IntegrationSecrets {
-    x_consumer_key: string;
-    x_consumer_secret: string;
-    x_access_token: string;
-    x_access_secret: string;
-    x_bearer_token: string;
-    instagram_username: string;
-    instagram_password: string;
-    bsky_handle: string;
-    bsky_app_password: string;
-    created_at?: string;
+    x_consumer_key: string; // Twitter Consumer Key
+    x_consumer_secret: string; // Twitter Consumer Secret
+    x_access_token: string; // Twitter Access Token
+    x_access_secret: string; // Twitter Access Secret
+    x_bearer_token: string; // Twitter Bearer Token
+    instagram_username: string; // Instagram Username
+    instagram_password: string; // Instagram Password
+    bsky_handle: string; // Bluesky Handle
+    bsky_app_password: string; // Bluesky App Password
+    created_at?: string; // Optional timestamp for when the secrets were created
 }
 
+// Fetch the latest integration secrets from the backend
 export async function getIntegrationSecrets(): Promise<IntegrationSecrets | null> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     const response = await fetch(`${apiUrl}/api/secrets`, { method: "GET" });
@@ -22,6 +24,7 @@ export async function getIntegrationSecrets(): Promise<IntegrationSecrets | null
     return data as IntegrationSecrets;
 }
 
+// Create new integration secrets in the backend
 export async function createIntegrationSecrets(
     secrets: IntegrationSecrets
 ): Promise<void> {
@@ -39,6 +42,7 @@ export async function createIntegrationSecrets(
     }
 }
 
+// Delete integration secrets from the backend
 export async function deleteIntegrationSecrets(id?: string): Promise<void> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     const url = apiUrl + id ? `/api/secrets?id=${id}` : "/api/secrets";
@@ -51,6 +55,7 @@ export async function deleteIntegrationSecrets(id?: string): Promise<void> {
     }
 }
 
+// AdminSecretsForm component for managing integration secrets
 export default function AdminSecretsForm() {
     const [secrets, setSecrets] = useState<IntegrationSecrets>({
         x_consumer_key: "",
@@ -64,6 +69,7 @@ export default function AdminSecretsForm() {
         bsky_app_password: "",
     });
 
+    // Fetch existing secrets on component mount
     useEffect(() => {
         getIntegrationSecrets()
             .then((data) => {
@@ -74,11 +80,13 @@ export default function AdminSecretsForm() {
             .catch(console.error);
     }, []);
 
+    // Handle input changes in the form
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!secrets) return;
         setSecrets({ ...secrets, [e.target.name]: e.target.value });
     };
 
+    // Save secrets to the backend
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         if (secrets) await createIntegrationSecrets(secrets);
@@ -89,7 +97,8 @@ export default function AdminSecretsForm() {
             onSubmit={handleSave}
             className="max-w-md mx-auto p-4 bg-white border border-gray-300 rounded"
         >
-            <h2 className="mb-4 text-xl font-semibold">Integration Secrets</h2>
+            <h2 className="mb-4 text-xl font-semibold">Social Account Secrets</h2>
+            {/* Twitter Consumer Key */}
             <div className="mb-2">
                 <label className="block mb-1">Twitter Consumer Key</label>
                 <input
@@ -101,6 +110,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Twitter Consumer Secret */}
             <div className="mb-2">
                 <label className="block mb-1">Twitter Consumer Secret</label>
                 <input
@@ -112,6 +122,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Twitter Access Token */}
             <div className="mb-2">
                 <label className="block mb-1">Twitter Access Token</label>
                 <input
@@ -123,6 +134,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Twitter Access Secret */}
             <div className="mb-2">
                 <label className="block mb-1">Twitter Access Secret</label>
                 <input
@@ -134,6 +146,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Twitter Bearer Token */}
             <div className="mb-2">
                 <label className="block mb-1">Twitter Bearer Token</label>
                 <input
@@ -145,6 +158,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Instagram Username */}
             <div className="mb-2">
                 <label className="block mb-1">Instagram Username</label>
                 <input
@@ -156,6 +170,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Instagram Password */}
             <div className="mb-2">
                 <label className="block mb-1">Instagram Password</label>
                 <input
@@ -167,6 +182,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Bluesky Handle */}
             <div className="mb-2">
                 <label className="block mb-1">Bluesky Handle</label>
                 <input
@@ -178,6 +194,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Bluesky App Password */}
             <div className="mb-4">
                 <label className="block mb-1">Bluesky App Password</label>
                 <input
@@ -189,6 +206,7 @@ export default function AdminSecretsForm() {
                     onChange={handleChange}
                 />
             </div>
+            {/* Save Button */}
             <button
                 type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
