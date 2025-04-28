@@ -134,3 +134,34 @@ APPEND_SLASH = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,          # keep Django’s defaults
+
+    # ─────── formatters ─────────────────────────────────────────────
+    "formatters": {
+        "posts_fmt": {
+            "format": "%(asctime)s [%(levelname)s] %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+
+    # ─────── handlers ───────────────────────────────────────────────
+    "handlers": {
+        "posts_console": {
+            "class": "logging.StreamHandler",
+            "formatter": "posts_fmt",
+        },
+    },
+
+    # ─────── loggers ────────────────────────────────────────────────
+    # Only messages coming from logging.getLogger("posts") land here
+    "loggers": {
+        "posts": {
+            "handlers": ["posts_console"],
+            "level": "INFO",           # or DEBUG / WARNING / ERROR
+            "propagate": False,        # don’t bubble up to root
+        },
+    },
+}

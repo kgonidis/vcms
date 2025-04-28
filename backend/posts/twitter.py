@@ -2,9 +2,12 @@ import io
 import tweepy
 from dataclasses import dataclass
 from os import environ
+import logging
 
 from .post import MediaPost, MediaObject
 from .models import IntegrationSecrets
+
+logger = logging.getLogger("posts")
 
 
 @dataclass
@@ -15,6 +18,7 @@ class TwitterCredentials:
     access_token: str
     access_token_secret: str
 
+
 class Twitter(MediaPost):
     MEDIA_UPLOAD_URL = "https://api.x.com/2/media/upload"
     TWEET_URL = "https://api.x.com/2/tweets"
@@ -22,7 +26,7 @@ class Twitter(MediaPost):
     _inst: "Twitter" = None
 
     def __init__(self, credentials: TwitterCredentials = None):
-        if credentials is not None: 
+        if credentials is not None:
             auth = tweepy.OAuthHandler(
                 consumer_key=credentials.api_key,
                 consumer_secret=credentials.api_secret_key,
@@ -53,7 +57,7 @@ class Twitter(MediaPost):
             secrets = IntegrationSecrets.objects.latest("created_at")
         except IntegrationSecrets.DoesNotExist:
             return super().instance()
-        
+
         credentials = TwitterCredentials(
             bearer_token=secrets.x_bearer_token,
             api_key=secrets.x_consumer_key,
@@ -61,7 +65,7 @@ class Twitter(MediaPost):
             access_token=secrets.x_access_token,
             access_token_secret=secrets.x_access_secret,
         )
-        
+
         cls._inst = cls(credentials)
         return cls._inst
 
@@ -69,18 +73,23 @@ class Twitter(MediaPost):
     def reset(cls):
         cls._inst = None
 
-    def upload_media(self, filename: str, media: io.IOBase, mime_type: str, category: str = None) -> str:
+    def upload_media(
+        self, filename: str, media: io.IOBase, mime_type: str, category: str = None
+    ) -> str:
         if self.api is None:
             raise ValueError("Twitter API client is not initialized.")
-        media.seek(0)  # rewind the stream
-        category = category or ("tweet_image" if mime_type.startswith("image/") else "tweet_video")
+        category = category or (
+            "tweet_image" if mime_type.startswith("image/") else "tweet_video"
+        )
         resp = self.api.media_upload(filename, file=media, media_category=category)
         return resp.media_id_string
 
     def post(self, text: str, media: MediaObject = None):
         if self.client is None:
             self._inst = None
-            raise Exception("Twitter client is not initialized. Please provide credentials.")
+            raise Exception(
+                "Twitter client is not initialized. Please provide credentials."
+            )
         else:
             if media is not None:
                 media_id = self.upload_media(media.name, media.media, media.mime_type)

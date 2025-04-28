@@ -9,7 +9,7 @@ from logging import getLogger
 from .post import MediaPost, MediaObject
 from .models import IntegrationSecrets
 
-logger = getLogger(__name__)
+logger = getLogger("posts")
 
 @dataclass
 class InstagramCredentials:
@@ -60,7 +60,6 @@ class Instagram(MediaPost):
             raise Exception("No media provided for posting.")
 
         with open(media.name, 'wb') as media_file:
-            media.media.seek(0)  # rewind the stream
             media_file.write(media.media.read())
 
         if media.mime_type.startswith('video/'):

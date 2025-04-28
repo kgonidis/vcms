@@ -1,3 +1,4 @@
+import io
 from typing import Dict
 from datetime import datetime, timezone
 from .models import Post, Asset, Social
@@ -34,6 +35,7 @@ def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
 
     if media_obj is None:
         for _media in post.assets.all():
+            # deep copy the media object
             media: Asset = _media
             try:
                 # get media from MinioClient if it exists
@@ -45,15 +47,24 @@ def post_immediate(post: Post, media_obj: MediaObject = None) -> None:
                 )
             break
 
+    pos = media_obj.media.tell()
+    data = media_obj.media.read()
     for _s in post.socials.all():
         s: Social = _s
         if s.social not in MEDIA_POSTERS:
             raise ValueError(f"Unsupported social media platform: {s.social}")
         media_poster = MEDIA_POSTERS[s.social].instance()
+        # deep copy the media object
         try:
+            m = io.BytesIO(data)
+            m.seek(pos)
             media_poster.post(
                 post.text,
-                media=media_obj,
+                media=MediaObject(
+                    media_obj.name,
+                    media_obj.mime_type,
+                    m,
+                ),
             )
         except Exception as e:
             print(f"Error posting to {s.social}: {e}")

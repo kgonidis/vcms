@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from io import IOBase
 from logging import getLogger
 
-logger = getLogger(__name__)
+logger = getLogger("posts")
 
 @dataclass
 class MediaObject:

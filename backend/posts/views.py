@@ -14,7 +14,7 @@ from .instagram import Instagram
 from .bluesky import Bluesky
 from .helpers import schedule_post, delete_post_artifacts, reset_posters
 
-logger = getLogger(__name__)
+logger = getLogger("posts")
 
 MEDIA_POSTERS: Dict[str, MediaPost] = {
     "x": Twitter,

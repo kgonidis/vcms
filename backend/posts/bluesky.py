@@ -10,8 +10,8 @@
 
 from dataclasses import dataclass
 from typing import Optional
-
 from atproto import Client
+import logging
 
 from .models import IntegrationSecrets
 
@@ -19,6 +19,8 @@ if __name__ == "__main__":
     from post import MediaObject
 else:
     from .post import MediaObject
+
+logger = logging.getLogger("posts")
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -95,12 +97,16 @@ class Bluesky:
         """
 
         if media is not None:
-            media.media.seek(0)  # rewind the stream
             b = media.media.read()
             if "image/" in media.mime_type:
                 self.client.send_image(text, b, image_alt=alt)
             elif "video/" in media.mime_type:
                 self.client.send_video(text, b, video_alt=alt)
+            else:
+                logger.warning(
+                    f"Unsupported media type: {media.mime_type}.  "
+                    "Only image and video types are supported."
+                )
         else:
             self.client.send_post(text)
 
