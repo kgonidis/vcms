@@ -33,8 +33,6 @@ export async function postSocial(
   payload.assets.forEach((file) => form.append("media", file, file.name));
   form.append("time", new Date().toISOString()); // optional timestamp
 
-  console.log("Sending payload:", payload);
-
   // ---------- 2. Fire the request ----------
   const res = await fetch(endpoint, {
     method: "POST",

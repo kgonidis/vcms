@@ -22,14 +22,14 @@ export default function Home() {
     };
 
     const handleSchedule = (payload: ScheduleParameters) => {
-        console.log("Scheduled post data:", payload);
-        // 👉 you can call your backend API here instead of console.log
         postSocial(payload).then((res) => {
             if (res.ok) {
                 refreshPosts(); // Refresh the list of scheduled posts
             } else {
                 console.error("Failed to schedule post:", res.statusText);
             }
+        }).catch((error) => {
+            console.error("Error scheduling post:", error);
         });
     };
 

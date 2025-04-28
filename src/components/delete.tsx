@@ -19,8 +19,12 @@ interface DeleteButtonProps {
 
 const DeleteButton: React.FC<DeleteButtonProps> = ({ id, refresh }) => {
     const handleDelete = async () => {
-        const response = await deleteItem(id);
-        console.log(response);
+        try {
+            await deleteItem(id);
+        } catch (error) {
+            console.error("Error deleting item:", error);
+        }
+        
         if (refresh) {
             refresh();
         }
