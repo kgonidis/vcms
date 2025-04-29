@@ -32,7 +32,7 @@
 
 ```mermaid
 graph TD
-    KC[Keycloak] <-->|OIDC| OP(oauth2-proxy)
+    KC[Auth Provider<br>Auth0, Keycloak] <-->|OIDC| OP(oauth2-proxy)
     OP -->|signed cookie| NX[Next.js<br>Port 3000]
     subgraph Backend
         DJ[Django API<br>Gunicorn]
