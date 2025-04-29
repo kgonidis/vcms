@@ -29,7 +29,7 @@ export default function NavBar() {
             style={{ backgroundColor: BRAND_COLOR }}
         >
             <h1 className="text-2xl font-bold text-white">
-                Social Media Scheduler
+                {pathname.includes("admin") ? "Admin" : "Social Media Scheduler"}
             </h1>
             <div className="flex items-center gap-2">
                 {/* left – site logo */}
