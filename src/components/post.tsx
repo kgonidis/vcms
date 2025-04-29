@@ -202,13 +202,13 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
       <div className="flex justify-end space-x-2">
         <button
           onClick={onRequestClose}
-          className="px-4 py-2 rounded border border-gray-400 text-gray-700"
+          className="px-4 py-2 rounded border border-[#464db5] text-[#464db5] cursor-pointer"
         >
           Cancel
         </button>
         <button
           onClick={handleSubmit}
-          className="px-4 py-2 rounded bg-blue-600 text-white"
+          className="px-4 py-2 rounded bg-[#464db5] text-white hover:bg-[#3b3f9a] transition cursor-pointer"
         >
           {immediate ? "Post" : "Schedule"}
         </button>

@@ -47,7 +47,7 @@ export default function Home() {
             <div className="flex flex-col grow items-center justify-center gap-6 bg-gray-100 text-[#464db5]">
                 <button
                     onClick={() => setModalOpen(true)}
-                    className="px-6 py-3 rounded bg-[#464db5] text-white shadow hover:bg-[#5d6199] transition"
+                    className="px-6 py-3 rounded bg-[#464db5] text-white shadow hover:bg-[#5d6199] transition cursor-pointer"
                 >
                     Schedule a Post
                 </button>
