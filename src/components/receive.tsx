@@ -57,48 +57,45 @@ interface Props {
 
 const ScheduledPostsTable: React.FC<Props> = ({ posts, refresh }) => {
     if (posts.length === 0) {
-        return <p className="text-center text-gray-500">No scheduled posts.</p>;
+        return <p className="text-center text-[#464db5]">No scheduled posts.</p>;
     }
 
     return (
-        <div className="overflow-x-auto rounded-lg shadow">
-            <table className="min-w-full text-sm text-left whitespace-nowrap">
-                <thead className="bg-gray-100">
-                    <tr>
-                        <Th>ID</Th>
-                        <Th>Text</Th>
-                        <Th>Schedule</Th>
-                        <Th>Repeat</Th>
-                        <Th>Socials</Th>
-                        <Th>Media</Th>
-                        <Th>Actions</Th>
-                    </tr>
-                </thead>
+        <div className="overflow-x-auto rounded-lg shadow w-3/4">
+            <table className="min-w-full text-base text-left whitespace-nowrap">
+            <thead className="bg-[#464db5] text-white">
+                <tr>
+                <Th>ID</Th>
+                <Th>Text</Th>
+                <Th>Schedule</Th>
+                <Th>Repeat</Th>
+                <Th>Socials</Th>
+                <Th>Media</Th>
+                <Th>Actions</Th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {posts.map((p) => (
-                        <tr key={p.id} className="border-t last:border-b">
-                            <Td>{p.id}</Td>
-                            <Td className="max-w-xs truncate" title={p.text}>
-                                {p.text.length > 30 ? p.text.slice(0, 30) + "..." : p.text}
-                            </Td>
-                            <Td>
-                                {p.schedule
-                                    ? new Date(p.schedule).toLocaleString()
-                                    : "Immediate"}
-                            </Td>
-                            <Td>{p.repeat ? p.repeat : "none"}</Td>
-                            <Td>{p.socials.map((s) => s.social).join(", ")}</Td>
-                            <Td>{p.assets?.[0]?.file_name ?? "—"}</Td>
-                            <Td>
-                                <DeleteButton
-                                    id={String(p.id)}
-                                    refresh={refresh}
-                                />
-                            </Td>
-                        </tr>
-                    ))}
-                </tbody>
+            <tbody className="bg-white text-black">
+                {posts.map((p) => (
+                <tr key={p.id} className="border-t last:border-b">
+                    <Td>{p.id}</Td>
+                    <Td className="max-w-xs truncate" title={p.text}>
+                    {p.text.length > 30 ? p.text.slice(0, 30) + "..." : p.text}
+                    </Td>
+                    <Td>
+                    {p.schedule
+                        ? new Date(p.schedule).toLocaleString()
+                        : "Immediate"}
+                    </Td>
+                    <Td>{p.repeat ? p.repeat : "none"}</Td>
+                    <Td>{p.socials.map((s) => s.social).join(", ")}</Td>
+                    <Td>{p.assets?.[0]?.file_name ?? "—"}</Td>
+                    <Td>
+                    <DeleteButton id={String(p.id)} refresh={refresh} />
+                    </Td>
+                </tr>
+                ))}
+            </tbody>
             </table>
         </div>
     );
@@ -107,7 +104,7 @@ const ScheduledPostsTable: React.FC<Props> = ({ posts, refresh }) => {
 /* ─── Tiny helpers for cleaner JSX ─── */
 
 const Th: React.FC<React.PropsWithChildren> = ({ children }) => (
-    <th className="px-4 py-2 font-semibold text-gray-700">{children}</th>
+    <th className="px-4 py-2 font-semibold text-white">{children}</th>
 );
 
 const Td: React.FC<

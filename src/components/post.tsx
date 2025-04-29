@@ -103,7 +103,7 @@ export default function ScheduledPostModal({ isOpen, onRequestClose, onSchedule 
       onRequestClose={onRequestClose}
       contentLabel="Schedule Post"
       overlayClassName="fixed inset-0 bg-black/50 flex items-center justify-center"
-      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg text-black"
+      className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg text-[#464db5]"
       ariaHideApp={false}
     >
       <h2 className="text-xl font-semibold mb-4">{immediate ? "Post Now" : "Schedule a Post"}</h2>
