@@ -21,7 +21,7 @@ docker run \
     -e POSTGRES_HOST=postgres \
     -e POSTGRES_PORT=5432 \
     --rm \
-    kgondis/vcms-backend:latest \
+    kgonidis/vcms-backend:latest \
     python manage.py makemigrations posts
 
 docker run \
