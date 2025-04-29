@@ -10,7 +10,7 @@ else
     exit 1
 fi
 
-mv backend/posts/apps.py backend/posts/apps.py.bak
+# mv backend/posts/apps.py backend/posts/apps.py.bak
 ${DOCKER_COMPOSE} build
 ${DOCKER_COMPOSE} up postgres minio -d
 
@@ -25,7 +25,7 @@ docker run \
     kgonidis/vcms-backend:latest \
     sh -c "python manage.py makemigrations posts && python manage.py migrate"
 
-mv backend/posts/apps.py.bak backend/posts/apps.py
+# mv backend/posts/apps.py.bak backend/posts/apps.py
 ${DOCKER_COMPOSE} build backend
 
 ${DOCKER_COMPOSE} up -d
