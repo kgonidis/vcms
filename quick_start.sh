@@ -21,7 +21,7 @@ docker run \
     -e POSTGRES_HOST=postgres \
     -e POSTGRES_PORT=5432 \
     --rm \
-    vcms-backend:latest \
+    kgondis/vcms-backend:latest \
     python manage.py makemigrations posts
 
 docker run \
@@ -32,7 +32,7 @@ docker run \
     -e POSTGRES_HOST=postgres \
     -e POSTGRES_PORT=5432 \
     --rm \
-    vcms-backend:latest \
+    kgonidis/vcms-backend:latest \
     python manage.py migrate
 
 ${DOCKER_COMPOSE} up -d
