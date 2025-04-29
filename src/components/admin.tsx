@@ -42,6 +42,32 @@ export async function createIntegrationSecrets(
     }
 }
 
+function SecretField({
+    label,
+    name,
+    value,
+    handleChange,
+}: {
+    label: string;
+    name: string;
+    value: string;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+    return (
+        <div className="mb-2">
+            <label className="block mb-1 text-[#464db5]">{label}</label>
+            <input
+                className="w-full p-2 border border-[#464db5] rounded bg-transparent text-[#464db5] placeholder-[#464db5]"
+                type="password"
+                name={name}
+                placeholder={label}
+                value={value}
+                onChange={handleChange}
+            />
+        </div>
+    );
+}
+
 // Delete integration secrets from the backend
 export async function deleteIntegrationSecrets(id?: string): Promise<void> {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -96,121 +122,78 @@ export default function AdminSecretsForm() {
         <div className="flex items-center justify-center  text-white my-4">
             <form
                 onSubmit={handleSave}
-                className="w-3/4 max-w-md p-4 border border-[#464db5] rounded bg-[#464db5]"
+                className="w-3/4 max-w-md p-4 border border-[#464db5] rounded bg-white"
             >
-                <h2 className="mb-4 text-xl font-semibold">Social Account Secrets</h2>
+                <h2 className="mb-4 text-xl font-semibold text-[#464db5]">
+                    Social Account Secrets
+                </h2>
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Twitter Consumer Key</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="x_consumer_key"
-                        placeholder="Twitter Consumer Key"
-                        value={secrets.x_consumer_key}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Twitter Consumer Key"
+                    name="x_consumer_key"
+                    value={secrets.x_consumer_key}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Twitter Consumer Secret</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="x_consumer_secret"
-                        placeholder="Twitter Consumer Secret"
-                        value={secrets.x_consumer_secret}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Twitter Consumer Secret"
+                    name="x_consumer_secret"
+                    value={secrets.x_consumer_secret}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Twitter Access Token</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="x_access_token"
-                        placeholder="Twitter Access Token"
-                        value={secrets.x_access_token}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Twitter Access Token"
+                    name="x_access_token"
+                    value={secrets.x_access_token}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Twitter Access Secret</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="x_access_secret"
-                        placeholder="Twitter Access Secret"
-                        value={secrets.x_access_secret}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Twitter Access Secret"
+                    name="x_access_secret"
+                    value={secrets.x_access_secret}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Twitter Bearer Token</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="x_bearer_token"
-                        placeholder="Twitter Bearer Token"
-                        value={secrets.x_bearer_token}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Twitter Bearer Token"
+                    name="x_bearer_token"
+                    value={secrets.x_bearer_token}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Instagram Username</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="text"
-                        name="instagram_username"
-                        placeholder="Instagram Username"
-                        value={secrets.instagram_username}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Instagram Username"
+                    name="instagram_username"
+                    value={secrets.instagram_username}
+                    handleChange={handleChange}
+                />
+                
+                <SecretField
+                    label="Instagram Password"
+                    name="instagram_password"
+                    value={secrets.instagram_password}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Instagram Password</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="instagram_password"
-                        placeholder="Instagram Password"
-                        value={secrets.instagram_password}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Bluesky Handle"
+                    name="bsky_handle"
+                    value={secrets.bsky_handle}
+                    handleChange={handleChange}
+                />
 
-                <div className="mb-2">
-                    <label className="block mb-1 text-white">Bluesky Handle</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="text"
-                        name="bsky_handle"
-                        placeholder="Bluesky Handle"
-                        value={secrets.bsky_handle}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block mb-1 text-white">Bluesky App Password</label>
-                    <input
-                        className="w-full p-2 border border-white rounded bg-transparent text-white placeholder-white"
-                        type="password"
-                        name="bsky_app_password"
-                        placeholder="Bluesky App Password"
-                        value={secrets.bsky_app_password}
-                        onChange={handleChange}
-                    />
-                </div>
+                <SecretField
+                    label="Bluesky App Password"
+                    name="bsky_app_password"
+                    value={secrets.bsky_app_password}
+                    handleChange={handleChange}
+                />
 
                 <button
                     type="submit"
-                    className="bg-white text-[#464db5] px-4 py-2 rounded hover:bg-gray-100"
+                    className="bg-[#464db5] text-white px-4 py-2 rounded hover:bg-[#3a3f9e] cursor-pointer"
                 >
                     Save
                 </button>
