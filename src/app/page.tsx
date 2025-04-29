@@ -30,6 +30,7 @@ export default function Home() {
             }
         }).catch((error) => {
             console.error("Error scheduling post:", error);
+            alert(`Failed to schedule post: ${error}`);
         });
     };
 

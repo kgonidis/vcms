@@ -85,9 +85,9 @@ const ScheduledPostsTable: React.FC<Props> = ({ posts, refresh }) => {
                             <Td>
                                 {p.schedule
                                     ? new Date(p.schedule).toLocaleString()
-                                    : "—"}
+                                    : "Immediate"}
                             </Td>
-                            <Td>{p.repeat}</Td>
+                            <Td>{p.repeat ? p.repeat : "none"}</Td>
                             <Td>{p.socials.map((s) => s.social).join(", ")}</Td>
                             <Td>{p.assets?.[0]?.file_name ?? "—"}</Td>
                             <Td>

@@ -1,6 +1,6 @@
 # VCMS: Social Media Scheduler
 
-VCMS (Virtual Content Management System) is a platform for scheduling and automating social media posts across multiple platforms, including Instagram, X (formerly Twitter), and Bluesky. It consists of a **Django backend** and a **Next.js React frontend**.
+VCMS (Video Content Management System) is a platform for scheduling and automating social media posts across multiple platforms, including Instagram, X (formerly Twitter), and Bluesky. It consists of a **Django backend** and a **Next.js React frontend**.
 
 ---
 
