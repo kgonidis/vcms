@@ -4,6 +4,29 @@ VCMS (Video Content Management System) is a platform for scheduling and automati
 
 ---
 
+# Table of Contents
+
+- [VCMS: Social Media Scheduler](#vcms-social-media-scheduler)
+- [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start (Docker)](#quick-start-docker)
+  - [Adding API Credentials](#adding-api-credentials)
+    - [Alternative: Using `curl`](#alternative-using-curl)
+  - [Scheduling Posts](#scheduling-posts)
+  - [CI/CD Pipeline](#cicd-pipeline)
+    - [Triggering the Workflow](#triggering-the-workflow)
+  - [Local Development](#local-development)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+  - [Environment Variables](#environment-variables)
+    - [Backend](#backend-1)
+    - [Frontend](#frontend-1)
+  - [File Structure](#file-structure)
+  - [License](#license)
+
+---
+
 ## Features
 
 - Schedule posts to multiple social media platforms.
@@ -25,7 +48,7 @@ VCMS (Video Content Management System) is a platform for scheduling and automati
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/vcms.git
+   git clone https://github.com/kgonidis/vcms.git
    cd vcms
    ```
 
@@ -56,7 +79,7 @@ VCMS (Video Content Management System) is a platform for scheduling and automati
 To connect the platform to social media accounts, you need to add API credentials via the **Admin Page**:
 
 1. Navigate to the Admin page:
-   - [http://localhost:3000/admin](http://localhost:3000/admin)
+   - [http://localhost:3000/admin.html](http://localhost:3000/admin.html)
 
 2. Fill in the required fields for each platform:
    - **X (Twitter)**: Consumer Key, Consumer Secret, Access Token, Access Secret, Bearer Token.
