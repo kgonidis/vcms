@@ -48,7 +48,7 @@ VCMS (Video Content Management System) is a platform for scheduling and automati
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/kgonidis/vcms.git
+   git clone https://github.com/kgonidis/vcms
    cd vcms
    ```
 
